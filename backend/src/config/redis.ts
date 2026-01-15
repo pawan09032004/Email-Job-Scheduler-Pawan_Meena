@@ -42,7 +42,10 @@ class RedisClient {
    * Create a new Redis connection (for BullMQ worker)
    * BullMQ requires separate connections for Queue and Worker
    */
-  createConnection(): Redis {
+  // Return type is intentionally `any` to avoid tight coupling between
+  // the ioredis version used here and the one bundled with BullMQ.
+  // BullMQ accepts any compatible Redis-like connection object.
+  createConnection(): any {
     return new Redis({
       host: config.redis.host,
       port: config.redis.port,
