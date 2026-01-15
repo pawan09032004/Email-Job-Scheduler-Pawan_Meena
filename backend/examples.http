@@ -1,0 +1,219 @@
+### ReachInbox Email Scheduler - API Examples
+### Use with REST Client extension in VS Code or similar HTTP client
+
+@baseUrl = http://localhost:4000
+@apiUrl = {{baseUrl}}/api/emails
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Root Endpoint (API Info)
+GET {{baseUrl}}/
+
+###
+
+### 1. Schedule an Email (5 minutes from now)
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "john.doe@example.com",
+  "subject": "Welcome to ReachInbox!",
+  "body": "Thank you for signing up. We're excited to have you on board!",
+  "scheduledAt": "2026-01-14T20:00:00.000Z",
+  "senderEmail": "noreply@reachinbox.com"
+}
+
+###
+
+### 2. Schedule Multiple Emails (Testing Rate Limiting)
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "user1@example.com",
+  "subject": "Newsletter #1",
+  "body": "This is newsletter #1",
+  "scheduledAt": "2026-01-14T19:30:00.000Z",
+  "senderEmail": "newsletter@reachinbox.com"
+}
+
+###
+
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "user2@example.com",
+  "subject": "Newsletter #2",
+  "body": "This is newsletter #2",
+  "scheduledAt": "2026-01-14T19:31:00.000Z",
+  "senderEmail": "newsletter@reachinbox.com"
+}
+
+###
+
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "user3@example.com",
+  "subject": "Newsletter #3",
+  "body": "This is newsletter #3",
+  "scheduledAt": "2026-01-14T19:32:00.000Z",
+  "senderEmail": "newsletter@reachinbox.com"
+}
+
+###
+
+### 3. Get All Emails
+GET {{apiUrl}}
+
+###
+
+### 4. Get Scheduled Emails Only
+GET {{apiUrl}}?status=scheduled
+
+###
+
+### 5. Get Sent Emails Only
+GET {{apiUrl}}?status=sent
+
+###
+
+### 6. Get Failed Emails Only
+GET {{apiUrl}}?status=failed
+
+###
+
+### 7. Get Emails by Sender
+GET {{apiUrl}}?senderEmail=newsletter@reachinbox.com
+
+###
+
+### 8. Get Emails with Pagination
+GET {{apiUrl}}?limit=10&offset=0
+
+###
+
+### 9. Get Email by ID (replace with actual UUID)
+@emailId = 550e8400-e29b-41d4-a716-446655440000
+GET {{apiUrl}}/{{emailId}}
+
+###
+
+### 10. Get Queue Statistics
+GET {{apiUrl}}/stats/queue
+
+###
+
+### 11. Trigger Recovery (Restart Safety Test)
+POST {{apiUrl}}/recover
+
+###
+
+### 12. Schedule Email for Tomorrow
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "future@example.com",
+  "subject": "Scheduled for Tomorrow",
+  "body": "This email is scheduled for tomorrow",
+  "scheduledAt": "2026-01-15T09:00:00.000Z",
+  "senderEmail": "scheduler@reachinbox.com"
+}
+
+###
+
+### 13. Schedule Meeting Reminder
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "team@company.com",
+  "subject": "Meeting Reminder: Quarterly Review",
+  "body": "Don't forget about our quarterly review meeting tomorrow at 2 PM. Conference Room A.",
+  "scheduledAt": "2026-01-15T13:00:00.000Z",
+  "senderEmail": "calendar@company.com"
+}
+
+###
+
+### 14. Schedule Welcome Email
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "newuser@example.com",
+  "subject": "Welcome to Our Platform! 🎉",
+  "body": "Hi there! Welcome to our platform. We're thrilled to have you join our community. Let's get started with a quick tour of the features...",
+  "scheduledAt": "2026-01-14T19:45:00.000Z",
+  "senderEmail": "welcome@platform.com"
+}
+
+###
+
+### 15. Error Test - Missing Required Fields
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "test@example.com",
+  "subject": "Missing fields"
+}
+
+###
+
+### 16. Error Test - Invalid Email Format
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "invalid-email",
+  "subject": "Test",
+  "body": "Test body",
+  "scheduledAt": "2026-01-14T20:00:00.000Z",
+  "senderEmail": "sender@example.com"
+}
+
+###
+
+### 17. Error Test - Past Date
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "test@example.com",
+  "subject": "Past Date Test",
+  "body": "This should fail",
+  "scheduledAt": "2020-01-01T00:00:00.000Z",
+  "senderEmail": "sender@example.com"
+}
+
+###
+
+### 18. Rate Limiting Test - Schedule Many Emails
+### Run this multiple times to test hourly rate limit
+POST {{apiUrl}}/schedule
+Content-Type: application/json
+
+{
+  "toEmail": "ratelimit{{$randomInt}}@example.com",
+  "subject": "Rate Limit Test",
+  "body": "Testing rate limiting functionality",
+  "scheduledAt": "2026-01-14T19:40:00.000Z",
+  "senderEmail": "ratelimit@reachinbox.com"
+}
+
+###
+
+### 19. Get Scheduled Emails with Limit
+GET {{apiUrl}}?status=scheduled&limit=5
+
+###
+
+### 20. Monitor Queue - Run Periodically
+GET {{apiUrl}}/stats/queue
+
+###
