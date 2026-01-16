@@ -11,7 +11,7 @@ export async function initializeDatabase(): Promise<void> {
     console.log('📋 Initializing database schema...');
     
     // Read schema.sql file
-    const schemaPath = join(__dirname, 'schema.sql');
+    const schemaPath = join(__dirname, '../../src/db/schema.sql');
     const schema = readFileSync(schemaPath, 'utf-8');
     
     // Execute schema
