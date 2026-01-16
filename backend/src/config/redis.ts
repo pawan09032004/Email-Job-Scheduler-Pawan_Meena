@@ -11,8 +11,9 @@ class RedisClient {
   private client: Redis;
 
   constructor() {
+    const host = (config.redis.host || '').trim();
     this.client = new Redis({
-      host: config.redis.host,
+      host,
       port: config.redis.port,
       maxRetriesPerRequest: null, // Required for BullMQ
       enableReadyCheck: false,
@@ -46,8 +47,9 @@ class RedisClient {
   // the ioredis version used here and the one bundled with BullMQ.
   // BullMQ accepts any compatible Redis-like connection object.
   createConnection(): any {
+    const host = (config.redis.host || '').trim();
     return new Redis({
-      host: config.redis.host,
+      host,
       port: config.redis.port,
       maxRetriesPerRequest: null,
       enableReadyCheck: false,
